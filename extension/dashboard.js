@@ -70,6 +70,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await loadData();
   initThemeManager();
   renderDashboard();
+  updatePresetActiveStates();
 
   // Load from Storage
   async function loadData() {
@@ -1064,9 +1065,67 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  // Helper to format Date as YYYY-MM-DD (local time)
+  function formatDateLocal(date) {
+    const yyyy = date.getFullYear();
+    const mm = String(date.getMonth() + 1).padStart(2, '0');
+    const dd = String(date.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  // Update preset active styling based on current filter input values
+  function updatePresetActiveStates() {
+    const startVal = filterStartDate ? filterStartDate.value : '';
+    const endVal = filterEndDate ? filterEndDate.value : '';
+
+    document.querySelectorAll('.date-preset-btn').forEach(btn => {
+      btn.classList.remove('active');
+    });
+
+    if (!startVal && !endVal) {
+      const btn = document.querySelector('.date-preset-btn[data-preset="all"]');
+      if (btn) btn.classList.add('active');
+      return;
+    }
+
+    const todayStr = formatDateLocal(new Date());
+
+    const d3m = new Date();
+    d3m.setMonth(d3m.getMonth() - 3);
+    const d3mStr = formatDateLocal(d3m);
+
+    const d6m = new Date();
+    d6m.setMonth(d6m.getMonth() - 6);
+    const d6mStr = formatDateLocal(d6m);
+
+    const d12m = new Date();
+    d12m.setMonth(d12m.getMonth() - 12);
+    const d12mStr = formatDateLocal(d12m);
+
+    const dytd = new Date(new Date().getFullYear(), 0, 1);
+    const dytdStr = formatDateLocal(dytd);
+
+    if (endVal === todayStr) {
+      if (startVal === d3mStr) {
+        const btn = document.querySelector('.date-preset-btn[data-preset="3m"]');
+        if (btn) btn.classList.add('active');
+      } else if (startVal === d6mStr) {
+        const btn = document.querySelector('.date-preset-btn[data-preset="6m"]');
+        if (btn) btn.classList.add('active');
+      } else if (startVal === d12mStr) {
+        const btn = document.querySelector('.date-preset-btn[data-preset="12m"]');
+        if (btn) btn.classList.add('active');
+      } else if (startVal === dytdStr) {
+        const btn = document.querySelector('.date-preset-btn[data-preset="ytd"]');
+        if (btn) btn.classList.add('active');
+      }
+    }
+  }
+
   // Date range filters change listeners
   const handleDateChange = () => {
     renderReceiptsGrid();
+    updatePresetActiveStates();
   };
   
   if (filterStartDate) filterStartDate.addEventListener('change', handleDateChange);
@@ -1077,8 +1136,39 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (filterStartDate) filterStartDate.value = '';
       if (filterEndDate) filterEndDate.value = '';
       renderReceiptsGrid();
+      updatePresetActiveStates();
     });
   }
+
+  // Set up click listeners for preset buttons
+  document.querySelectorAll('.date-preset-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const preset = btn.getAttribute('data-preset');
+      const today = new Date();
+      const todayStr = formatDateLocal(today);
+
+      if (preset === 'all') {
+        if (filterStartDate) filterStartDate.value = '';
+        if (filterEndDate) filterEndDate.value = '';
+      } else {
+        let start = new Date();
+        if (preset === '3m') {
+          start.setMonth(start.getMonth() - 3);
+        } else if (preset === '6m') {
+          start.setMonth(start.getMonth() - 6);
+        } else if (preset === '12m') {
+          start.setMonth(start.getMonth() - 12);
+        } else if (preset === 'ytd') {
+          start = new Date(today.getFullYear(), 0, 1);
+        }
+        if (filterStartDate) filterStartDate.value = formatDateLocal(start);
+        if (filterEndDate) filterEndDate.value = todayStr;
+      }
+      
+      renderReceiptsGrid();
+      updatePresetActiveStates();
+    });
+  });
 
   // Window Resize
   window.addEventListener('resize', () => {

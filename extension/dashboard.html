@@ -66,6 +66,13 @@
             <span style="font-size: 11px; color: var(--text-secondary); width: 35px; flex-shrink: 0;">End:</span>
             <input type="date" id="filterEndDate" style="background: var(--sidebar-bg); border: 1px solid var(--card-border); color: var(--text-highlight); border-radius: 6px; padding: 4px 8px; font-size: 12px; outline: none; width: 100%; cursor: pointer;">
           </div>
+          <div class="date-presets-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 4px;">
+            <button class="date-preset-btn" data-preset="3m" title="Last 3 Months">3 Months</button>
+            <button class="date-preset-btn" data-preset="6m" title="Last 6 Months">6 Months</button>
+            <button class="date-preset-btn" data-preset="12m" title="Last 12 Months">1 Year</button>
+            <button class="date-preset-btn" data-preset="ytd" title="Year to Date">YTD</button>
+            <button class="date-preset-btn" data-preset="all" style="grid-column: span 2;" title="Show All Time">All Time</button>
+          </div>
           <button class="btn btn-secondary" id="clearDateFilterBtn" style="padding: 4px 8px; font-size: 11px; margin-top: 4px; display: none;">Clear Date Range</button>
         </div>
 
