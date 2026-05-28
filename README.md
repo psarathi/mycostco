@@ -71,7 +71,7 @@ Follow these steps to load the unpacked extension in Google Chrome:
 1. **Download/Clone the Extension**: Ensure all extension files are placed in a folder on your computer (e.g. `/path/to/mycostco`).
 2. **Open Chrome Extensions**: Open Google Chrome and navigate to `chrome://extensions/`.
 3. **Enable Developer Mode**: Toggle the **Developer mode** switch in the top right corner to **ON**.
-4. **Load the Extension**: Click **Load unpacked** in the top left corner, select your project folder, and click **Open**.
+4. **Load the Extension**: Click **Load unpacked** in the top left corner, select the `extension` folder inside the project directory, and click **Open**.
 5. **Pin the Extension**: Click the puzzle piece icon on your Chrome toolbar and pin **Costco Receipt Finder** for quick access.
 
 ---
