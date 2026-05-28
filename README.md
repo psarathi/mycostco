@@ -68,7 +68,7 @@ graph TD
 
 Follow these steps to load the unpacked extension in Google Chrome:
 
-1. **Download/Clone the Extension**: Ensure all extension files are placed in a folder on your computer (e.g. `/Users/parthasarathi/Documents/Development/JavaScript/mycostco`).
+1. **Download/Clone the Extension**: Ensure all extension files are placed in a folder on your computer (e.g. `/path/to/mycostco`).
 2. **Open Chrome Extensions**: Open Google Chrome and navigate to `chrome://extensions/`.
 3. **Enable Developer Mode**: Toggle the **Developer mode** switch in the top right corner to **ON**.
 4. **Load the Extension**: Click **Load unpacked** in the top left corner, select your project folder, and click **Open**.
@@ -81,7 +81,7 @@ Follow these steps to load the unpacked extension in Google Chrome:
 To fetch your itemized warehouse receipts, you must bridge Costco's authentication context:
 
 1. Open a new browser tab and go to the Costco orders page: 
-   👉 [costco.com/myaccount/#/app/ordersandpurchases](https://www.costco.com/myaccount/#/app/ordersandpurchases) (or log in and go to **Orders & Purchases** under My Account).
+   👉 [costco.com/myaccount/#/app/{account_id}/ordersandpurchases](https://www.costco.com/myaccount/#/app/{account_id}/ordersandpurchases) (or log in and go to **Orders & Purchases** under My Account).
 2. Log in with your normal Costco account credentials. (Complete any 2FA/OTP code requested by Costco).
 3. Once looking at your Costco Orders and Purchases page, click the **Costco Receipt Finder** icon in your toolbar.
 4. You will see a green status indicator: **Connected to Costco (Ready to synchronize receipts)**.
@@ -105,8 +105,8 @@ The local Web Dashboard operates offline and can be accessed anytime by clicking
 ### Theme Customization
 The dashboard supports three theme settings to match your visual preference:
 * **Premium Dark**: The default modern dark interface optimized for low-light environments.
-* **Solarized Light**: A beautiful, warm light mode utilizing classic Solarized base tones (`#fdf6e3` and `#eee8d5`) for high readability in daylight.
-* **Sync with System**: Dynamically syncs the theme with your operating system's color scheme preference, switching between Premium Dark and Solarized Light automatically.
+* **Parchment Light**: A beautiful, book-like parchment light mode utilizing classic warm-cream base tones and a realistic paper-grain overlay for high readability.
+* **Sync with System**: Dynamically syncs the theme with your operating system's color scheme preference, switching between Premium Dark and Parchment Light automatically.
 
 To change the theme, use the **Theme** selector dropdown at the bottom of the filters section in the sidebar.
 
@@ -153,7 +153,7 @@ This occurs if the extension icons are not formatted as true PNGs.
 
 ### 🔌 Sync button is disabled or says "Disconnected"
 The extension content script requires an active, focused Costco purchases tab to bridge the connection.
-* **Fix**: Ensure you have [costco.com/myaccount/#/app/ordersandpurchases](https://www.costco.com/myaccount/#/app/ordersandpurchases) open, that you are fully logged in, and that the tab is refreshed. Then click the extension popup again.
+* **Fix**: Ensure you have [costco.com/myaccount/#/app/{account_id}/ordersandpurchases](https://www.costco.com/myaccount/#/app/{account_id}/ordersandpurchases) open, that you are fully logged in, and that the tab is refreshed. Then click the extension popup again.
 
 ### 🛑 Akamai / "Access Denied" page appears on Costco
 Costco uses strict bot-detection. If you sync too frequently or make rapid manual requests, you may trigger a temporary block.
