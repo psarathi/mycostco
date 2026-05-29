@@ -23,81 +23,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     lastSyncText.textContent = 'Never synchronized';
   }
 
-  // Check tab status
-  try {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    
-    if (!tab || !tab.url) {
-      setConnectionStatus('disconnected', 'No active tab', 'Please click when viewing a webpage.');
-      return;
-    }
-
-    const isCostco = tab.url.includes('costco.com') || tab.url.includes('costco.ca');
-    
-    if (!isCostco) {
-      setConnectionStatus(
-        'disconnected', 
-        'Not on Costco', 
-        'Please navigate to Costco.com and log in.'
-      );
-      return;
-    }
-
-    // We are on Costco, try to read local storage tokens from the page
-    setConnectionStatus('checking', 'Checking Costco session...', 'Reading secure tokens...');
-    
-    const tokenResult = await chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      world: 'MAIN',
-      func: () => {
-        // Read tokens from localStorage/sessionStorage
-        let idToken = localStorage.getItem('idToken') || sessionStorage.getItem('idToken');
-        let clientID = localStorage.getItem('clientID') || sessionStorage.getItem('clientID');
-
-        if (!idToken || !clientID) {
-          // Search localStorage for matching keys
-          for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (!idToken && (key.toLowerCase().includes('idtoken') || key.toLowerCase().includes('authorization'))) {
-              idToken = localStorage.getItem(key);
-            }
-            if (!clientID && key.toLowerCase().includes('clientid')) {
-              clientID = localStorage.getItem(key);
-            }
-          }
-        }
-        return { idToken, clientID };
-      }
-    });
-
-    const tokens = tokenResult?.[0]?.result;
-    
-    if (tokens && tokens.idToken && tokens.clientID) {
-      activeIdToken = tokens.idToken;
-      activeClientID = tokens.clientID;
-      setConnectionStatus(
-        'connected', 
-        'Connected to Costco', 
-        'Ready to synchronize receipts.'
-      );
-      syncBtn.disabled = false;
-      syncBtn.classList.remove('btn-disabled');
-    } else {
-      setConnectionStatus(
-        'disconnected', 
-        'Log in Required', 
-        'Please log in and go to your Orders and Purchases page.'
-      );
-    }
-  } catch (err) {
-    console.error('Error checking tab status:', err);
-    setConnectionStatus(
-      'error', 
-      'Connection Error', 
-      'Could not read session. Try reloading the page.'
-    );
-  }
-
   // Dashboard Button
   dashboardBtn.addEventListener('click', () => {
     chrome.tabs.create({ url: 'dashboard.html' });
@@ -204,6 +129,81 @@ document.addEventListener('DOMContentLoaded', async () => {
       resetSyncButton();
     }
   });
+
+  // Check tab status
+  try {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    
+    if (!tab || !tab.url) {
+      setConnectionStatus('disconnected', 'No active tab', 'Please click when viewing a webpage.');
+      return;
+    }
+
+    const isCostco = tab.url.includes('costco.com') || tab.url.includes('costco.ca');
+    
+    if (!isCostco) {
+      setConnectionStatus(
+        'disconnected', 
+        'Not on Costco', 
+        'Please navigate to Costco.com and log in.'
+      );
+      return;
+    }
+
+    // We are on Costco, try to read local storage tokens from the page
+    setConnectionStatus('checking', 'Checking Costco session...', 'Reading secure tokens...');
+    
+    const tokenResult = await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      world: 'MAIN',
+      func: () => {
+        // Read tokens from localStorage/sessionStorage
+        let idToken = localStorage.getItem('idToken') || sessionStorage.getItem('idToken');
+        let clientID = localStorage.getItem('clientID') || sessionStorage.getItem('clientID');
+
+        if (!idToken || !clientID) {
+          // Search localStorage for matching keys
+          for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (!idToken && (key.toLowerCase().includes('idtoken') || key.toLowerCase().includes('authorization'))) {
+              idToken = localStorage.getItem(key);
+            }
+            if (!clientID && key.toLowerCase().includes('clientid')) {
+              clientID = localStorage.getItem(key);
+            }
+          }
+        }
+        return { idToken, clientID };
+      }
+    });
+
+    const tokens = tokenResult?.[0]?.result;
+    
+    if (tokens && tokens.idToken && tokens.clientID) {
+      activeIdToken = tokens.idToken;
+      activeClientID = tokens.clientID;
+      setConnectionStatus(
+        'connected', 
+        'Connected to Costco', 
+        'Ready to synchronize receipts.'
+      );
+      syncBtn.disabled = false;
+      syncBtn.classList.remove('btn-disabled');
+    } else {
+      setConnectionStatus(
+        'disconnected', 
+        'Log in Required', 
+        'Please log in and go to your Orders and Purchases page.'
+      );
+    }
+  } catch (err) {
+    console.error('Error checking tab status:', err);
+    setConnectionStatus(
+      'error', 
+      'Connection Error', 
+      'Could not read session. Try reloading the page.'
+    );
+  }
 
   function resetSyncButton() {
     syncBtn.disabled = false;
