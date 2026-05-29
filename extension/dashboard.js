@@ -221,9 +221,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     let warehousesHTML = '';
     sortedWarehouses.forEach(wh => {
       const activeClass = selectedWarehouses.has(wh) ? 'active' : '';
+      const escapedWh = escapeHTML(wh);
       warehousesHTML += `
-        <div class="filter-chip ${activeClass}" data-warehouse="${wh}">
-          <span>${wh}</span>
+        <div class="filter-chip ${activeClass}" data-warehouse="${escapedWh}">
+          <span>${escapedWh}</span>
         </div>
       `;
     });
@@ -568,9 +569,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         const matchingItems = items.filter(item => isItemMatched(item));
         if (matchingItems.length > 0) {
           const matchLines = matchingItems.map(item => {
-            const desc = String(item.itemDescription01 || 'Unknown Item');
-            const itemNum = String(item.itemNumber || '');
-            const alias = itemAliases[itemNum] ? ` (${itemAliases[itemNum]})` : '';
+            const desc = escapeHTML(item.itemDescription01 || 'Unknown Item');
+            const itemNum = escapeHTML(item.itemNumber || '');
+            const alias = itemAliases[itemNum] ? ` (${escapeHTML(itemAliases[itemNum])})` : '';
             const purchaseCount = itemPurchaseCounts[itemNum] || 0;
             return `<div class="card-match-highlight">Matched: <strong>${desc}${alias}</strong> (${purchaseCount}x bought)</div>`;
           });
@@ -580,9 +581,9 @@ document.addEventListener('DOMContentLoaded', async () => {
       
       for (let i = 0; i < Math.min(items.length, limit); i++) {
         const item = items[i];
-        const desc = String(item.itemDescription01 || 'Unknown Item');
-        const itemNum = String(item.itemNumber || '');
-        const alias = itemAliases[itemNum] ? ` (${itemAliases[itemNum]})` : '';
+        const desc = escapeHTML(item.itemDescription01 || 'Unknown Item');
+        const itemNum = escapeHTML(item.itemNumber || '');
+        const alias = itemAliases[itemNum] ? ` (${escapeHTML(itemAliases[itemNum])})` : '';
         const isMatched = isItemMatched(item);
         
         // Show global purchase frequency badge in card preview
@@ -606,14 +607,14 @@ document.addEventListener('DOMContentLoaded', async () => {
           <span class="card-total">${formatCurrency(r.total)}</span>
         </div>
         <div>
-          <div class="card-warehouse">${r.warehouseName || 'Costco Wholesale'}</div>
+          <div class="card-warehouse">${escapeHTML(r.warehouseName || 'Costco Wholesale')}</div>
         </div>
         <div class="card-items-preview">
           ${matchedItemsSummaryHTML}
           ${itemsPreviewHTML}
         </div>
         <div class="card-footer">
-          <span>TX: ${r.transactionNumber || 'N/A'}</span>
+          <span>TX: ${escapeHTML(r.transactionNumber || 'N/A')}</span>
           <span>${items.length} items</span>
         </div>
       `;
@@ -709,12 +710,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         qtyLine = `<div class="item-sub-line">${item.unit} @ ${formatCurrency(parseFloat(item.amount) / parseFloat(item.unit))}</div>`;
       }
 
+      const escapedDesc = escapeHTML(desc1);
+      const escapedAlias = alias ? escapeHTML(alias) : '';
+      const escapedItemNum = escapeHTML(itemNum);
       itemRow.innerHTML = `
         <div class="item-main-line">
           <span class="item-desc">
-            ${desc1} 
-            ${alias ? `<span class="item-alias-tag">(${alias})</span>` : ''}
-            <span style="font-size: 10px; color: #666; font-weight: normal; margin-left: 5px;">#${itemNum}</span>
+            ${escapedDesc} 
+            ${alias ? `<span class="item-alias-tag">(${escapedAlias})</span>` : ''}
+            <span style="font-size: 10px; color: #666; font-weight: normal; margin-left: 5px;">#${escapedItemNum}</span>
           </span>
           <span class="item-price">${formatCurrency(item.amount)}</span>
         </div>
@@ -754,7 +758,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       tDiv.style.display = 'flex';
       tDiv.style.justifyContent = 'space-between';
       tDiv.innerHTML = `
-        <span>${t.tenderDescription || 'TENDER'}</span>
+        <span>${escapeHTML(t.tenderDescription || 'TENDER')}</span>
         <span>${formatCurrency(t.amountTender)}</span>
       `;
       recTenders.appendChild(tDiv);
@@ -893,7 +897,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     for (let i = 0; i < Math.min(items.length, displayLimit); i++) {
       const item = items[i];
-      const name = item.itemDescription01 || 'Unknown Item';
+      const name = escapeHTML(item.itemDescription01 || 'Unknown Item');
       const price = formatCurrency(item.amount);
       itemsHTML += `
         <div class="hover-preview-item">
@@ -911,10 +915,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       `;
     }
 
-    const wNum = receipt.warehouseNumber || '000';
-    const wName = receipt.warehouseName || 'Costco Wholesale';
+    const wNum = escapeHTML(receipt.warehouseNumber || '000');
+    const wName = escapeHTML(receipt.warehouseName || 'Costco Wholesale');
     const dateStr = receipt.transactionDate ? new Date(receipt.transactionDate).toLocaleDateString('en-US') : '00/00/0000';
-    const txNum = receipt.transactionNumber || '00';
+    const txNum = escapeHTML(receipt.transactionNumber || '00');
 
     hoverPreview.innerHTML = `
       <div class="hover-preview-header">COSTCO WHSE</div>
@@ -1326,5 +1330,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   function formatMembership(val) {
     if (val.length <= 4) return val;
     return '*'.repeat(val.length - 4) + val.slice(-4);
+  }
+
+  function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
   }
 });
