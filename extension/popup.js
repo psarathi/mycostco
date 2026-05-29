@@ -30,7 +30,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Sync Button (Sends message to content script to fetch receipts)
   syncBtn.addEventListener('click', async () => {
-    if (!activeIdToken || !activeClientID) return;
+    if (!activeIdToken || !activeClientID) {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      const purchasesUrl = 'https://www.costco.com/myaccount/#/app/ordersandpurchases';
+      
+      if (tab && (tab.url.includes('costco.com') || tab.url.includes('costco.ca'))) {
+        chrome.tabs.update(tab.id, { url: purchasesUrl });
+      } else {
+        chrome.tabs.create({ url: purchasesUrl });
+      }
+      window.close();
+      return;
+    }
 
     // Show loading state
     syncBtn.disabled = true;
@@ -147,6 +158,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         'Not on Costco', 
         'Please navigate to Costco.com and log in.'
       );
+      syncBtn.disabled = false;
+      syncBtn.classList.remove('btn-disabled');
+      syncBtnText.textContent = 'Go to Costco.com';
       return;
     }
 
@@ -195,6 +209,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         'Log in Required', 
         'Please log in and go to your Orders and Purchases page.'
       );
+      syncBtn.disabled = false;
+      syncBtn.classList.remove('btn-disabled');
+      syncBtnText.textContent = 'Go to Purchases Page';
     }
   } catch (err) {
     console.error('Error checking tab status:', err);
