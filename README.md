@@ -2,19 +2,26 @@
 
 A premium, privacy-first Chrome Extension and offline Web App Dashboard designed to extract, search, filter, analyze, and print your itemized Costco receipts (covering both in-warehouse purchases and online orders) securely without any remote server storage.
 
+## 📸 Screenshots
+
+| Premium Dark Theme | Parchment Light Theme |
+| :---: | :---: |
+| ![Premium Dark Theme Screenshot](screenshots/dashboard_dark.png) | ![Parchment Light Theme Screenshot](screenshots/dashboard_parchment.png) |
+
 ---
 
 ## 📖 Table of Contents
-1. [Key Features](#-key-features)
-2. [Technical & Security Architecture](#-technical--security-architecture)
-3. [Installation Guide](#-installation-guide)
-4. [Step-by-Step Sync Guide](#-step-by-step-sync-guide)
-5. [Dashboard User Manual](#-dashboard-user-manual)
+1. [Screenshots](#-screenshots)
+2. [Key Features](#-key-features)
+3. [Technical & Security Architecture](#-technical--security-architecture)
+4. [Installation Guide](#-installation-guide)
+5. [Step-by-Step Sync Guide](#-step-by-step-sync-guide)
+6. [Dashboard User Manual](#-dashboard-user-manual)
    - [Keyboard Shortcuts](#keyboard-shortcuts)
    - [Managing Nicknames (Aliases)](#managing-nicknames-aliases)
    - [Backup & Restore (JSON)](#backup--restore-json)
-6. [Thermal Slip Printing Guide](#-thermal-slip-printing-guide)
-7. [Troubleshooting & FAQ](#-troubleshooting--faq)
+7. [Thermal Slip Printing Guide](#-thermal-slip-printing-guide)
+8. [Troubleshooting & FAQ](#-troubleshooting--faq)
 
 ---
 
